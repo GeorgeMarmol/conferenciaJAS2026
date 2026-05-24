@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anda Conmigo - Conferencia JAS 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0D3B66;
+            --primary-light: #2B7AB8;
+            --turquoise: #4A9BC8;
+            --mint: #A8D5BA;
+            --golden: #F4A460;
+            --background: #F0EEE8;
+            --card-bg: #FFFFFF;
+            --text-primary: #0D3B66;
+            --text-secondary: #555;
+            --text-light: #888;
+            --border: #E0DDD5;
+            --shadow-sm: 0 2px 6px rgba(13, 59, 102, 0.08);
+            --shadow-md: 0 6px 20px rgba(13, 59, 102, 0.12);
+            --shadow-lg: 0 12px 40px rgba(13, 59, 102, 0.15);
+            --font-size-mult: 1;
+        }
+
+        body.font-small {
+            --font-size-mult: 0.85;
+        }
+
+        body.font-large {
+            --font-size-mult: 1.2;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #F8F6F0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header & Hero */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .logo-display {
+            margin-bottom: 16px;
+            min-height: 100px;
+        }
+
+        .logo-display img {
+            max-width: 100%;
+            width: 280px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+        .header-text h1 {
+            font-size: calc(28px * var(--font-size-mult));
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            font-size: calc(12px * var(--font-size-mult));
+            opacity: 0.95;
+            letter-spacing: 0.8px;
+        }
+
+        /* Font Size Controls */
+        .font-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .font-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .font-btn:active {
+            transform: scale(0.95);
+        }
+
+        .font-btn.active {
+            background: white;
+            color: var(--primary-dark);
+            border-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Navigation Tabs */
+        .tabs-wrapper {
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs-wrapper::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .tabs-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 2px;
+        }
+
+        .tab {
+            background: linear-gradient(135deg, #F5F5F5 0%, #FAFAFA 100%);
+            color: var(--text-secondary);
+            border: 2px solid transparent;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: calc(13px * var(--font-size-mult));
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: linear-gradient(135deg, #EFEFEF 0%, #F5F5F5 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--turquoise) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+            border-color: transparent;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 20px 12px;
+            max-width: 700px;
+            margin: 0 auto;
+            min-height: calc(100vh - 300px);
+        }
+
+        .day-schedule {
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .day-schedule.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Activity Card - Timeline Style */
+        .activity {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--turquoise) 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+            box-shadow: 0 0 0 4px var(--background);
+            border: 2px solid white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .activity:last-child .timeline-dot::after {
+            display: none;
+        }
+
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 80px;
+            background: linear-gradient(180deg, var(--primary-light) 0%, var(--border) 100%);
+            z-index: 1;
+        }
+
+        .activity-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        .activity-content:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--golden) 0%, #E8954C 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: calc(11px * var(--font-size-mult));
+            font-weight: 700;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(244, 164, 96, 0.25);
+        }
+
+        .activity-title {
+            font-size: calc(16px * var(--font-size-mult));
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: calc(12px * var(--font-size-mult));
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .location-icon {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--turquoise) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+
+        /* Description Toggle */
+        .description-wrapper {
+            margin-top: 10px;
+        }
+
+        .toggle-description {
+            background: linear-gradient(135deg, var(--golden) 0%, #E8954C 100%);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: calc(12px * var(--font-size-mult));
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(244, 164, 96, 0.3);
+            user-select: none;
+        }
+
+        .toggle-description:active {
+            transform: scale(0.96);
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 12px;
+        }
+
+        .toggle-description.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .description-text {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .description-text.show {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .description-content {
+            font-size: calc(13px * var(--font-size-mult));
+            color: var(--text-secondary);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: calc(14px * var(--font-size-mult));
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px 16px;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 2px solid var(--primary-light);
+        }
+
+        .footer-text {
+            font-size: calc(12px * var(--font-size-mult));
+            margin: 4px 0;
+        }
+
+        .footer-title {
+            font-size: calc(13px * var(--font-size-mult));
+            font-weight: 700;
+            margin: 8px 0 4px;
+        }
+
+        /* Responsive */
+        @media (min-width: 480px) {
+            .content {
+                padding: 24px 16px;
+            }
+
+            .activity-content {
+                padding: 18px;
+            }
+
+            header {
+                padding: 28px 16px;
+            }
+
+            .header-text h1 {
+                font-size: calc(32px * var(--font-size-mult));
+            }
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                padding: 28px;
+            }
+
+            .activity-content {
+                padding: 20px;
+            }
+
+            .activity {
+                gap: 20px;
+            }
+        }
+
+        /* Map Modal Styles */
+        .map-button {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--turquoise) 100%);
+            color: white;
+            border: none;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+        }
+
+        .map-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 24px rgba(43, 122, 184, 0.4);
+        }
+
+        .map-button:active {
+            transform: scale(0.95);
+        }
+
+        .map-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 16px;
+        }
+
+        .map-modal.show {
+            display: flex;
+        }
+
+        .map-modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(60px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .map-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            border-bottom: 3px solid var(--golden);
+        }
+
+        .map-modal-title {
+            font-size: calc(18px * var(--font-size-mult));
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .map-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .map-close-btn:hover {
+            background: white;
+            color: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        .map-modal-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 2px solid var(--border);
+        }
+
+        .map-info {
+            font-size: calc(13px * var(--font-size-mult));
+            color: var(--text-secondary);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--background) 0%, var(--light-gray) 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        @media (max-width: 480px) {
+            .map-button {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                bottom: 16px;
+                right: 16px;
+            }
+
+            .map-modal-content {
+                max-height: 90vh;
+            }
+
+            .map-modal-header {
+                padding: 16px;
+            }
+
+            .map-modal-title {
+                font-size: calc(16px * var(--font-size-mult));
+            }
+
+            .map-close-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+
+            .map-modal-body {
+                padding: 16px;
+            }
+        }
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-wrapper">
+            <div class="logo-display">
+                <img src="logo.png" alt="Anda Conmigo - Conferencia JAS 2026">
+            </div>
+            <div class="header-text">
+                <h1>Anda Conmigo</h1>
+                <p>CONFERENCIA JAS 2026 | 4-6 DE JUNIO</p>
+            </div>
+            <div class="font-controls">
+                <button class="font-btn" data-size="small" title="Texto pequeño">A−</button>
+                <button class="font-btn active" data-size="normal" title="Texto normal">A</button>
+                <button class="font-btn" data-size="large" title="Texto grande">A+</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabs-wrapper">
+        <button class="tab active" data-day="thursday">📅 Jueves 4</button>
+        <button class="tab" data-day="friday">📅 Viernes 5</button>
+        <button class="tab" data-day="saturday">📅 Sábado 6</button>
+    </nav>
+
+    <main class="content">
+        <!-- Jueves -->
+        <section class="day-schedule active" id="thursday">
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">11:30 AM - 2:30 PM</span>
+                    <h3 class="activity-title">Llegada | Registro | Desempacar</h3>
+                    <div class="location-info">
+                        <div class="location-icon">📍</div>
+                        <span>Parqueo Principal (Benjamin 1)</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">El proceso de registro se llevará a cabo mediante el uso de códigos QR, proporcionando una manera eficiente y moderna de registrar a los participantes por medio de la App "Come Together". Al momento de su registro, cada participante recibirá los souvenirs de la conferencia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">11:30 AM - 2:30 PM</span>
+                    <h3 class="activity-title">Almuerzo</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍽️</div>
+                        <span>Comedor</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">3:00 PM - 3:30 PM</span>
+                    <h3 class="activity-title">Bienvenida</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎤</div>
+                        <span>Pabellón Principal</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">La bienvenida a la conferencia será conducida por los coordinadores, quienes explicarán las normas del evento y se asegurarán que los participantes comprendan los objetivos y metas de la conferencia, proporcionando un marco claro para una participación activa y organizada.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">3:30 PM - 4:30 PM</span>
+                    <h3 class="activity-title">Actividad para Conocerse</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🤝</div>
+                        <span>Pabellón Principal</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Esta actividad ayuda a encontrar puntos en común y fortalece los lazos dentro de la comunidad.
+
+Durante esta actividad también invitaremos a cada joven a fijarse metas individuales para lograr durante la conferencia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">4:30 PM - 5:30 PM</span>
+                    <h3 class="activity-title">Capacitación de Líderes de Choza</h3>
+                    <div class="location-info">
+                        <div class="location-icon">📚</div>
+                        <span>Por determinar</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los líderes de choza recibirán una capacitación para que ellos puedan dirigir el Devocional en sus chozas con los demás participantes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">Simultáneamente</span>
+                    <h3 class="activity-title">Ensayo de Programa Musical | Show de Variedades</h3>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Práctica del programa musical y del show de talentos de la noche.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">5:30 PM - 6:00 PM</span>
+                    <h3 class="activity-title">Programa Musical</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎵</div>
+                        <span>Pabellón Elías</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Inspirar a los jóvenes adultos solteros a fortalecer su testimonio de nuestro Salvador Jesucristo, mediante la presentación de un programa musical a cargo del comité de música/coro.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">6:00 PM - 7:00 PM</span>
+                    <h3 class="activity-title">Devocional Matrimonio Director "Anda Conmigo"</h3>
+                    <div class="location-info">
+                        <div class="location-icon">✨</div>
+                        <span>Pabellón Principal</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los jóvenes tendrán la oportunidad de conversar con el matrimonio asignado a la sesión. Durante esta actividad, recibirán un mensaje en cuanto a cómo el salvador puede ser el centro de sus vidas y cómo andar con Él.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">7:15 PM - 8:15 PM</span>
+                    <h3 class="activity-title">Cena</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍽️</div>
+                        <span>Comedor</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Tiempo para cenar. La logística se llevará a cabo por chozas / brazaletes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">8:30 PM - 10:00 PM</span>
+                    <h3 class="activity-title">🎤 SHOW DE TALENTOS/KARAOKE</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎪</div>
+                        <span>Pabellón Principal</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Motivar a los jóvenes adultos solteros a fortalecer sus Dones y Talentos por medio de compartirlo con los demás en un espacio seguro y propio. Ellos tendrán la oportunidad de presentarse. Al finalizar las presentaciones, si hay tiempo adicional, los jóvenes tendrán la oportunidad de participar de un Karaoke.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">10:00 PM - 10:30 PM</span>
+                    <h3 class="activity-title">Prepararse para Dormir</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🛏️</div>
+                        <span>Chozas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Este tiempo permitirá a los jóvenes organizar sus pertenencias, cambiarse para dormir, estudio de las escrituras y relajarse.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">10:30 PM en adelante</span>
+                    <h3 class="activity-title">Equipo de Seguridad</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🚨</div>
+                        <span>Alrededor del Campamento</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Asegurarse que todo joven esté en su choza listo para dormir y descansar. Patrullaje según plan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Viernes -->
+        <section class="day-schedule" id="friday">
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">6:00 AM - 7:15 AM</span>
+                    <h3 class="activity-title">Levantarse y Prepararse</h3>
+                    <div class="location-info">
+                        <div class="location-icon">⏰</div>
+                        <span>Chozas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los JAS se prepararán para participar de las actividades del día.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">7:15 AM - 7:45 AM</span>
+                    <h3 class="activity-title">Devocional</h3>
+                    <div class="location-info">
+                        <div class="location-icon">📖</div>
+                        <span>Chozas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Acomodarse en sus puntos de encuentro con reverencia para iniciar sus estudios de las escrituras. Estudien la escritura elegida acorde al tema de la conferencia: Moisés 6:34 y analizar qué cosas pueden hacer para andar con el Señor. Podrían repasar el discurso de Elaine L. Jack "Anda Conmigo".</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">8:00 AM - 9:00 AM</span>
+                    <h3 class="activity-title">Desayuno</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍞</div>
+                        <span>Comedor</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los participantes deben presentar sus brazaletes de colores al momento de recibir los alimentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">9:30 AM - 10:20 AM</span>
+                    <h3 class="activity-title">Talleres - Turno 1</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎓</div>
+                        <span>Salón Elías</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los jóvenes tendrán la oportunidad de ser instruidos en talleres de calidad impartidos por matrimonios líderes de la iglesia. Cada taller contará con un cupo de 166 participantes y tendrá una duración de 45 minutos, seguidos de 10 minutos de descanso para traslados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">10:35 AM - 11:20 AM</span>
+                    <h3 class="activity-title">Talleres - Turno 2</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎓</div>
+                        <span>Salón Mosíah</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los jóvenes tendrán la oportunidad de ser instruidos en talleres de calidad impartidos por matrimonios líderes de la iglesia. Duración de 45 minutos, seguidos de 10 minutos de descanso para traslados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">11:30 AM - 12:20 PM</span>
+                    <h3 class="activity-title">Talleres - Turno 3</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎓</div>
+                        <span>Salón Sariah</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los jóvenes tendrán la oportunidad de ser instruidos en talleres de calidad impartidos por matrimonios líderes de la iglesia. Duración de 45 minutos, seguidos de 10 minutos de descanso para traslados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">1:15 PM - 2:00 PM</span>
+                    <h3 class="activity-title">Almuerzo</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍽️</div>
+                        <span>Comedor</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los participantes deben presentar sus brazaletes de colores al momento de recibir los alimentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">2:30 PM - 5:00 PM</span>
+                    <h3 class="activity-title">Stands Informativos</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎯</div>
+                        <span>Play</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">• Oportunidades de educación (Anabel Rosario)
+• Historia Familiar (Jose Bueno)
+• Preparación para la misión (John Lopez)
+• Temas del Evangelio (Ronald Leonardo)
+• Salud Mental (Mirtha Gomez)
+• Obtener un mejor Empleo (Martha Beato o Yadira Matías)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">2:30 PM - 5:00 PM</span>
+                    <h3 class="activity-title">Deportes y Juegos de Mesa</h3>
+                    <div class="location-info">
+                        <div class="location-icon">⚽</div>
+                        <span>Alrededor del Campamento</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Se prepararán diversas áreas donde los jóvenes podrán disfrutar de actividades recreativas según sus intereses. Estas actividades incluyen deportes como voleibol, baloncesto y softbol, así como juegos de mesa como dominó, Uno, parchís, ajedrez y cartas. También habrá manualidades para que los jóvenes puedan participar, ofreciendo un espacio para que los participantes se diviertan, conozcan nuevas personas y trabajen en equipo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">5:00 PM - 6:30 PM</span>
+                    <h3 class="activity-title">Tiempo para Ducharse</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🚿</div>
+                        <span>Duchas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Permitir que todos tengan un espacio para ducharse y regresar a las siguientes actividades listos para disfrutar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">6:50 PM - 8:00 PM</span>
+                    <h3 class="activity-title">Cena</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍽️</div>
+                        <span>Comedor</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los participantes deben presentar sus brazaletes de colores al momento de recibir los alimentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">8:00 PM - 11:00 PM</span>
+                    <h3 class="activity-title">🎉 FIESTA TEMÁTICA - Años 2000</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🎪</div>
+                        <span>Pabellón Principal</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Vestimenta de personaje o artista de esta época. Se realizará un concurso/premiación a la vestimenta más creativa. Proveer un espacio de convivencia que genere una interacción genuina entre los JAS, disfrutando de un ambiente dinámico y temático. Se busca potenciar la experiencia visual mediante escenarios diseñados para fotografías y fomentar el sentido de pertenencia a través de un código de vestimenta, integrando la creatividad y el respeto en un entorno festivo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">11:15 PM - 11:30 PM</span>
+                    <h3 class="activity-title">Tiempo para Dormir</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🛏️</div>
+                        <span>Chozas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">11:15 PM - 11:30 PM</span>
+                    <h3 class="activity-title">Equipo de Seguridad</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🚨</div>
+                        <span>Alrededor del Campamento</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sábado -->
+        <section class="day-schedule" id="saturday">
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">6:00 AM - 7:15 AM</span>
+                    <h3 class="activity-title">Levantarse y Prepararse</h3>
+                    <div class="location-info">
+                        <div class="location-icon">⏰</div>
+                        <span>Chozas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los JAS estarán de pie, haciendo los preparativos para el día.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">7:15 AM - 7:45 AM</span>
+                    <h3 class="activity-title">Devocional</h3>
+                    <div class="location-info">
+                        <div class="location-icon">📖</div>
+                        <span>Chozas</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Acomodarse en sus puntos de encuentro con reverencia para iniciar sus estudios de las escrituras.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">7:45 AM - 8:45 AM</span>
+                    <h3 class="activity-title">Desayuno</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍞</div>
+                        <span>Parqueo Benjamín 1</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los participantes deben presentar sus brazaletes de colores al momento de recibir los alimentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">9:00 AM - 11:30 AM</span>
+                    <h3 class="activity-title">❤️ Servicio Comunitario en Bonao</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🤲</div>
+                        <span>Lugares establecidos en Bonao</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">GRUPO 1 - Visita al Asilo de Ancianos
+Un grupo de 70 jóvenes visitará el asilo de ancianos, donde compartirán tiempo con los residentes, brindarán apoyo emocional y realizarán actividades de servicio según las necesidades del lugar.
+
+GRUPO 2 - Entrega de Kits de Higiene
+Un segundo grupo de jóvenes se desplazará a un club de la comunidad para hacer entrega de kits de higiene. El objetivo es brindar ayuda y esperanza a las personas que se encuentran en situación de vulnerabilidad.
+
+GRUPO 3 - Servicio en Escuela
+Un tercer grupo se desplazará a una escuela de la comunidad donde se dedicarán a labores de limpieza, organización, cortar el césped y pintar.
+
+GRUPO 4 - Entrega de Útiles Escolares
+Un último grupo estará en el centro de estaca de Bonao para repartir útiles escolares.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">12:00 PM - 1:30 PM</span>
+                    <h3 class="activity-title">Almuerzo</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🍽️</div>
+                        <span>Comedor</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Los participantes deben presentar sus brazaletes de colores al momento de recibir los alimentos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">2:00 PM - 3:00 PM</span>
+                    <h3 class="activity-title">Tarde de Testimonios</h3>
+                    <div class="location-info">
+                        <div class="location-icon">🗣️</div>
+                        <span>Pabellón Elías</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Cierre formal de la Conferencia JAS 2026. Los coordinadores centrales podrán compartir breves mensajes seguido de que los jóvenes tengan la oportunidad de testificar sobre la conferencia JAS.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity">
+                <div class="timeline-dot"></div>
+                <div class="activity-content">
+                    <span class="time-badge">3:00 PM - 3:30 PM</span>
+                    <h3 class="activity-title">Salida de la Conferencia</h3>
+                    <div class="location-info">
+                        <div class="location-icon">👋</div>
+                        <span>Todo el Campamento</span>
+                    </div>
+                    <div class="description-wrapper">
+                        <button class="toggle-description" type="button">
+                            <span class="toggle-icon">▼</span>
+                            <span>Ver descripción</span>
+                        </button>
+                        <div class="description-text">
+                            <p class="description-content">Tiempo de prepararse para salir de la conferencia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Map Button and Modal -->
+    <button class="map-button" id="mapBtn" title="Ver mapa del campamento">🗺️</button>
+
+    <div class="map-modal" id="mapModal">
+        <div class="map-modal-content">
+            <div class="map-modal-header">
+                <span class="map-modal-title">Mapa del Campamento</span>
+                <button class="map-close-btn" id="closeMapBtn">✕</button>
+            </div>
+            <div class="map-modal-body">
+                <img src="mapa-campamento.jpg" alt="Mapa del Campamento Bonao" class="map-image">
+                <div class="map-info">
+                    📍 Campamento Bonao - La Iglesia de Jesucristo de los Santos de los Últimos Días
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-title">✨ Anda Conmigo ✨</div>
+        <p class="footer-text">CONFERENCIA JAS 2026</p>
+        <p class="footer-text">📅 4 - 6 de Junio</p>
+        <p class="footer-text">Consejos de Coordinación Este y Santiago</p>
+    </footer>
+
+    <script>
+        // Font Size Control
+        const fontButtons = document.querySelectorAll('.font-btn');
+        const savedSize = localStorage.getItem('fontSize') || 'normal';
+
+        if (savedSize === 'small') document.body.classList.add('font-small');
+        if (savedSize === 'large') document.body.classList.add('font-large');
+
+        fontButtons.forEach(btn => {
+            if (btn.dataset.size === savedSize) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                document.body.classList.remove('font-small', 'font-large');
+                fontButtons.forEach(b => b.classList.remove('active'));
+                if (savedSize === 'small') document.body.classList.add('font-small');
+                if (btn.dataset.size === 'large') document.body.classList.add('font-large');
+                btn.classList.add('active');
+                localStorage.setItem('fontSize', btn.dataset.size);
+            });
+        });
+
+        // Tab Navigation
+        const tabs = document.querySelectorAll('.tab');
+        const schedules = document.querySelectorAll('.day-schedule');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const dayId = tab.dataset.day;
+                tabs.forEach(t => t.classList.remove('active'));
+                schedules.forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(dayId).classList.add('active');
+            });
+        });
+
+        // Description Toggle
+        const toggleButtons = document.querySelectorAll('.toggle-description');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const desc = btn.nextElementSibling;
+                btn.classList.toggle('expanded');
+                desc.classList.toggle('show');
+            });
+        });
+
+        // Map Modal
+        const mapBtn = document.getElementById('mapBtn');
+        const mapModal = document.getElementById('mapModal');
+        const closeMapBtn = document.getElementById('closeMapBtn');
+
+        if (mapBtn && mapModal && closeMapBtn) {
+            mapBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mapModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            });
+
+            closeMapBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mapModal.classList.remove('show');
+                document.body.style.overflow = '';
+            });
+
+            mapModal.addEventListener('click', (e) => {
+                if (e.target === mapModal) {
+                    mapModal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mapModal.classList.contains('show')) {
+                    mapModal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
