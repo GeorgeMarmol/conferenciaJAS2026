@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anda Conmigo - Conferencia JAS 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -553,6 +555,15 @@
             text-align: center;
         }
 
+        #mapContainer {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 2px solid var(--border);
+            background: #f0f0f0;
+        }
+
         .map-image {
             width: 100%;
             height: auto;
@@ -560,6 +571,85 @@
             border-radius: 8px;
             margin-bottom: 16px;
             border: 2px solid var(--border);
+        }
+
+        .location-info-box {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: calc(13px * var(--font-size-mult));
+            line-height: 1.6;
+        }
+
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .status-icon {
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .location-coords {
+            font-size: calc(11px * var(--font-size-mult));
+            opacity: 0.9;
+            font-family: 'Courier New', monospace;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .distance-info {
+            background: linear-gradient(135deg, var(--golden) 0%, #E8954C 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: calc(14px * var(--font-size-mult));
+            margin-bottom: 12px;
+        }
+
+        .get-location-btn {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--turquoise) 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: calc(13px * var(--font-size-mult));
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .get-location-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .get-location-btn:active {
+            transform: scale(0.98);
+        }
+
+        .get-location-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .map-info {
@@ -1333,9 +1423,38 @@ Un último grupo estará en el centro de estaca de Bonao para repartir útiles e
                 <button class="map-close-btn" id="closeMapBtn">✕</button>
             </div>
             <div class="map-modal-body">
-                <img src="mapa-campamento.jpg" alt="Mapa del Campamento Bonao" class="map-image">
+                <!-- Mapa Interactivo -->
+                <div id="mapContainer"></div>
+
+                <!-- Información de Ubicación -->
+                <div class="location-info-box" id="locationBox" style="display: none;">
+                    <div class="location-status">
+                        <span class="status-icon">📍</span>
+                        <span id="locationStatus">Detectando ubicación...</span>
+                    </div>
+                    <div id="coordsDisplay" class="location-coords"></div>
+                </div>
+
+                <!-- Información de Distancia -->
+                <div class="distance-info" id="distanceBox" style="display: none;">
+                    <div>Distancia al Campamento</div>
+                    <div style="font-size: calc(20px * var(--font-size-mult)); margin-top: 8px;">
+                        <span id="distanceValue">--</span> km
+                    </div>
+                </div>
+
+                <!-- Botón para obtener ubicación -->
+                <button class="get-location-btn" id="getLocationBtn">
+                    📍 Mostrar Mi Ubicación
+                </button>
+
+                <!-- Fallback: Imagen del mapa -->
+                <img src="mapa-campamento.jpg" alt="Mapa del Campamento Bonao" class="map-image" id="mapImageFallback">
+
+                <!-- Información del campamento -->
                 <div class="map-info">
-                    📍 Campamento Bonao - La Iglesia de Jesucristo de los Santos de los Últimos Días
+                    📍 Campamento Bonao - La Iglesia de Jesucristo de los Santos de los Últimos Días<br>
+                    <small style="opacity: 0.8;">Coordenadas: 19.1633° N, 69.2667° O</small>
                 </div>
             </div>
         </div>
@@ -1396,12 +1515,143 @@ Un último grupo estará en el centro de estaca de Bonao para repartir útiles e
         const mapBtn = document.getElementById('mapBtn');
         const mapModal = document.getElementById('mapModal');
         const closeMapBtn = document.getElementById('closeMapBtn');
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        
+        let map = null;
+        let userMarker = null;
+        let campMarker = null;
 
+        // Coordenadas del campamento (Bonao, República Dominicana)
+        const CAMP_COORDS = [19.1633, -69.2667];
+        const CAMP_NAME = "Campamento JAS 2026";
+
+        // Función para calcular distancia entre dos puntos (fórmula de Haversine)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la Tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Inicializar mapa
+        function initMap() {
+            if (map) return;
+            
+            map = L.map('mapContainer').setView(CAMP_COORDS, 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Marcador del campamento
+            campMarker = L.marker(CAMP_COORDS, {
+                icon: L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjEwIiByPSI4IiBmaWxsPSIjMkI3QUI4Ii8+PHBhdGggZD0iTTE2IDEwIEwxNiAzMiBMOCAxMCBMMjQgMTAgWiIgZmlsbD0iIzJCN0FCOCI+PC9wYXRoPjwvc3ZnPg==',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32],
+                    popupAnchor: [0, -32]
+                })
+            }).addTo(map);
+
+            campMarker.bindPopup(`<b>${CAMP_NAME}</b><br>Conferencia JAS 2026`);
+        }
+
+        // Obtener ubicación del usuario
+        function getLocation() {
+            getLocationBtn.disabled = true;
+            getLocationBtn.textContent = '⏳ Detectando ubicación...';
+
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                getLocationBtn.disabled = false;
+                getLocationBtn.textContent = '📍 Mostrar Mi Ubicación';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    updateMap(latitude, longitude);
+                    getLocationBtn.textContent = '✓ Ubicación Detectada';
+                    getLocationBtn.disabled = false;
+                },
+                (error) => {
+                    console.error('Error de geolocalización:', error);
+                    let errorMsg = 'No se pudo obtener tu ubicación. ';
+                    
+                    if (error.code === 1) {
+                        errorMsg += 'Habilita permisos de ubicación en tu navegador.';
+                    } else if (error.code === 2) {
+                        errorMsg += 'Verifica tu conexión a internet.';
+                    } else {
+                        errorMsg += 'Intenta de nuevo más tarde.';
+                    }
+                    
+                    alert(errorMsg);
+                    getLocationBtn.textContent = '📍 Mostrar Mi Ubicación';
+                    getLocationBtn.disabled = false;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        // Actualizar mapa con ubicación del usuario
+        function updateMap(userLat, userLon) {
+            if (!map) initMap();
+
+            // Remover marcador anterior
+            if (userMarker) map.removeLayer(userMarker);
+
+            // Agregar marcador del usuario
+            userMarker = L.marker([userLat, userLon], {
+                icon: L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI3IiBmaWxsPSIjRjRBNDYwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI0IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12],
+                    popupAnchor: [0, -12]
+                })
+            }).addTo(map);
+
+            userMarker.bindPopup('<b>Tu Ubicación</b>');
+
+            // Calcular distancia
+            const distance = calculateDistance(userLat, userLon, CAMP_COORDS[0], CAMP_COORDS[1]);
+
+            // Actualizar información de ubicación
+            document.getElementById('locationBox').style.display = 'block';
+            document.getElementById('locationStatus').textContent = '✓ Ubicación detectada';
+            document.getElementById('coordsDisplay').innerHTML = 
+                `Latitud: ${userLat.toFixed(4)}°<br>Longitud: ${userLon.toFixed(4)}°`;
+
+            // Actualizar información de distancia
+            document.getElementById('distanceBox').style.display = 'block';
+            document.getElementById('distanceValue').textContent = distance.toFixed(2);
+
+            // Ajustar vista del mapa para ver ambos puntos
+            const group = new L.featureGroup([userMarker, campMarker]);
+            map.fitBounds(group.getBounds().pad(0.1), { maxZoom: 15 });
+        }
+
+        // Event listeners del modal
         if (mapBtn && mapModal && closeMapBtn) {
             mapBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 mapModal.classList.add('show');
                 document.body.style.overflow = 'hidden';
+                // Inicializar mapa cuando se abre el modal
+                setTimeout(() => {
+                    if (!map) initMap();
+                    map.invalidateSize();
+                }, 100);
             });
 
             closeMapBtn.addEventListener('click', (e) => {
@@ -1423,6 +1673,11 @@ Un último grupo estará en el centro de estaca de Bonao para repartir útiles e
                     document.body.style.overflow = '';
                 }
             });
+        }
+
+        // Event listener para obtener ubicación
+        if (getLocationBtn) {
+            getLocationBtn.addEventListener('click', getLocation);
         }
     </script>
 </body>
